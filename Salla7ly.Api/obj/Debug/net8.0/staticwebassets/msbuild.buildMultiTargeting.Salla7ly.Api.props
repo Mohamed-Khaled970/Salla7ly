@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Salla7ly.Api.props" />
+</Project>
