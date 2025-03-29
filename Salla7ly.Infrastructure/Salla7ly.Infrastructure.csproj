@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Salla7ly.Application\Salla7ly.Application.csproj" />
+    <ProjectReference Include="..\Salla7ly.Domain\Salla7ly.Domain.csproj" />
   </ItemGroup>
 
 </Project>

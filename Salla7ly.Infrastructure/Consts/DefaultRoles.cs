@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Salla7ly.Application.Common.Consts
+namespace Salla7ly.Infrastructure.Consts
 {
     public class DefaultRoles
     {

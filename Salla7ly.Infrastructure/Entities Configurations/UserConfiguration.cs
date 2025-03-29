@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Salla7ly.Application.Common.Consts;
 using Salla7ly.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Salla7ly.Infrastructure.Consts;
 
 namespace Salla7ly.Infrastructure.Entities_Configurations
 {
@@ -29,6 +29,12 @@ namespace Salla7ly.Infrastructure.Entities_Configurations
                 EmailConfirmed = true,
                 PasswordHash = passwordHasher.HashPassword(null!, DefaultUsers.AdminPassword)
             });
+
+            builder
+                .OwnsMany(x => x.RefreshTokens)
+                .ToTable("RefreshTokens")
+                .WithOwner()
+                .HasForeignKey("UserId");
         }
     }
 }

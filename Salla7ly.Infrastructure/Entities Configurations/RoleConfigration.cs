@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Salla7ly.Application.Common.Consts;
 using Salla7ly.Domain;
+using Salla7ly.Infrastructure.Consts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

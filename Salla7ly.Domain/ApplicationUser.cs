@@ -15,5 +15,6 @@ namespace Salla7ly.Domain
         public string? IdCardBackUrl { get; set; } = string.Empty;
         public bool isDisabled { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public List<RefreshToken> RefreshTokens { get; set; } = [];
     }
 }

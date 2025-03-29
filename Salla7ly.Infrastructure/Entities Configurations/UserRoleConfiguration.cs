@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Salla7ly.Application.Common.Consts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Salla7ly.Infrastructure.Consts;
 
 namespace Salla7ly.Infrastructure.Entities_Configurations
 {
