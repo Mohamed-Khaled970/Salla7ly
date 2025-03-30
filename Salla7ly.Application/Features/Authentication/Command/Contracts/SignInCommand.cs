@@ -10,7 +10,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Contracts
 {
     public record SignInCommand
      (
-        string UserName,
+        string Email,
         string Password
      ) : IRequest<Result<SignInCommandResponse>>;
 }

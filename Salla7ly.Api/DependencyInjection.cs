@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Salla7ly.Application;
 using Salla7ly.Domain;
 using Salla7ly.Infrastructure;
 using Salla7ly.Infrastructure.Authentication;
+using System.Reflection;
 using System.Text;
 
 namespace Salla7ly.Api
@@ -13,10 +15,22 @@ namespace Salla7ly.Api
     {
         public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddCors(options =>
+                options.AddDefaultPolicy(builder =>
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin()
+                )
+            );
+
+            services.AddControllers(); 
+
             var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection String DefaultConnection not found.");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
             services.AddAuthConfig(configuration);
             services.AddSwaggerServices();
+            services.AddMediatRServices();
             return services;
         }
 
@@ -28,6 +42,12 @@ namespace Salla7ly.Api
 
             return services;
         }
+
+        //private static IServiceCollection AddMediatRServices(this IServiceCollection services)
+        //{
+        //    services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+        //    return services;
+        //}
 
         private static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
         {

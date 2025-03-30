@@ -9,8 +9,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Responses
     public record SignInCommandResponse(
          string Id,
          string? Email,
-         string? FirstName,
-         string? LastName,
+         string? UserName,
          string Token,
          int ExpiresIn,
          string RefreshToken,
