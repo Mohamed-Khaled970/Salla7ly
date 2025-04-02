@@ -6,6 +6,8 @@ using Salla7ly.Application;
 using Salla7ly.Domain;
 using Salla7ly.Infrastructure;
 using Salla7ly.Infrastructure.Authentication;
+using Salla7ly.Infrastructure.Services;
+using Salla7ly.Infrastructure.Settings;
 using System.Reflection;
 using System.Text;
 
@@ -31,6 +33,12 @@ namespace Salla7ly.Api
             services.AddAuthConfig(configuration);
             services.AddSwaggerServices();
             services.AddMediatRServices();
+            services.AddFluentValidationConfig();
+            services.AddMapsterConfig();
+
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
             return services;
         }
 

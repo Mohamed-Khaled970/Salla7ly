@@ -24,5 +24,14 @@ namespace Salla7ly.Api.Controllers
             return result.IsSuccess ? Ok(result.Value)
                    : result.ToProblem();
         }
+
+        [HttpPost("CraftmanSignUp")]
+        public async Task<IActionResult> CraftmanSignUp([FromBody] CraftmanSignUpCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok()
+                   : result.ToProblem();
+        }
     }
 }
