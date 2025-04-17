@@ -53,8 +53,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
             var otp = await _context.UserOtps
                             .FirstOrDefaultAsync(x => x.Email == request.Email
                             && x.Code == request.Otp
-                            && !x.IsDisabled
-                            && x.ExpirationTime > DateTime.UtcNow,
+                            && !x.IsDisabled,
                             cancellationToken);
 
             if (otp is null || otp.IsDisabled || otp.ExpirationTime < DateTime.UtcNow)
