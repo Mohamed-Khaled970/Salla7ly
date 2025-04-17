@@ -9,6 +9,6 @@ namespace Salla7ly.Infrastructure.Services
 {
     public interface IEmailService
     {
-        Task SendEmail(EmailRequest request);
+        Task SendEmailAsync(string email, string subject, string htmlMessage);
     }
 }

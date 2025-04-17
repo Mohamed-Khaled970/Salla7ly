@@ -18,20 +18,46 @@ namespace Salla7ly.Infrastructure.Services
         {
             this._mailSettings = options.Value;
         }
-        public async Task SendEmail(EmailRequest request)
+        //public async Task SendEmail(EmailRequest request)
+        //{
+        //    var email = new MimeMessage();
+        //    email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+        //    email.To.Add(MailboxAddress.Parse(request.Email));
+        //    email.Subject = request.Subject;
+        //    var builder = new BodyBuilder();
+        //    builder.HtmlBody = request.EmailBody;
+        //    email.Body = builder.ToMessageBody();
+
+        //    using var smtp = new SmtpClient();
+        //    smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+        //    smtp.Authenticate(_mailSettings.Mail,_mailSettings.Password);
+        //    await smtp.SendAsync(email);
+        //    smtp.Disconnect(true);
+        //}
+
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            email.To.Add(MailboxAddress.Parse(request.Email));
-            email.Subject = request.Subject;
-            var builder = new BodyBuilder();
-            builder.HtmlBody = request.EmailBody;
-            email.Body = builder.ToMessageBody();
+            var message = new MimeMessage
+            {
+                Sender = MailboxAddress.Parse(_mailSettings.Mail),
+                Subject = subject
+            };
+
+            message.To.Add(MailboxAddress.Parse(email));
+
+            var builder = new BodyBuilder
+            {
+                HtmlBody = htmlMessage
+            };
+
+            message.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
+
+
             smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_mailSettings.Mail,_mailSettings.Password);
-            await smtp.SendAsync(email);
+            smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            await smtp.SendAsync(message);
             smtp.Disconnect(true);
         }
     }

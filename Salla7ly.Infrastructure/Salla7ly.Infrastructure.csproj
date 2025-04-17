@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Salla7ly.Domain\Salla7ly.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Email Templates\" />
+  </ItemGroup>
+
 </Project>
