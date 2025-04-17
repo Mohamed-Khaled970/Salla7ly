@@ -13,6 +13,8 @@ namespace Salla7ly.Infrastructure
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :
         IdentityDbContext<ApplicationUser, ApplicationRole, string>(options)
     {
+        public DbSet<UserOtp> UserOtps { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

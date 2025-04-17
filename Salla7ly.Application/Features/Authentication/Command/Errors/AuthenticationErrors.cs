@@ -17,8 +17,8 @@ namespace Salla7ly.Application.Features.Authentication.Command.Errors
         public static readonly Error DublicatedEmail =
          new("User.DublicatedEmail", "Another user with the same email is already exists", StatusCodes.Status409Conflict);
 
-        public static readonly Error InvalidCode =
-           new("User.InvalidCode", "Invalid Code", StatusCodes.Status401Unauthorized);
+        public static readonly Error InvalidOtp =
+           new("User.InvalidOtp", "The provided OTP is invalid or expired.", StatusCodes.Status401Unauthorized);
 
         public static readonly Error DuplicatedConfirmation =
       new("User.DuplicatedInformation", "Email Already Confirmed", StatusCodes.Status400BadRequest);
@@ -27,6 +27,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Errors
          new("User.EmailNotConfirmed", "Email is not confirmed", StatusCodes.Status401Unauthorized);
 
         public static readonly Error UserEmailNotFound = new("User.UserEmailNotFound", "User Email NotFound", StatusCodes.Status404NotFound);
+
         public static readonly Error InvalidRefreshToken = new("User.InvalidRefreshToken", "Invalid refresh token", StatusCodes.Status401Unauthorized);
     }
 }

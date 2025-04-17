@@ -18,6 +18,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Contracts
         string ConfirmPassword,
         string DateOfBirth,
         string IdCardFrontUrl,
-        string IdCardBackUrl
-     ) : IRequest<Result>;
+        string IdCardBackUrl,
+        string Otp
+     ) : IRequest<Result<SignInCommandResponse>>;
 }
