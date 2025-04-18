@@ -10,15 +10,31 @@ namespace Salla7ly.Infrastructure.Helpers
     {
         public static string GenerateEmailBody(string template, Dictionary<string, string> templateModel)
         {
-            var templatePath = $"E:\\API Projects\\Salla7ly\\Salla7ly.Infrastructure\\Email Templates\\{template}.html";
-            var streamReader = new StreamReader(templatePath);
-            var body = streamReader.ReadToEnd();
-            streamReader.Close();
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+ 
+            var solutionRoot = Directory.GetParent(currentDirectory)?.FullName;
+
+            if (solutionRoot is null)
+                throw new DirectoryNotFoundException("Cannot locate solution root directory.");
+
+            var templatePath = Path.Combine(
+                solutionRoot,
+                "Salla7ly.Infrastructure",
+                "Email Templates",
+                $"{template}.html"
+            );
+
+            if (!File.Exists(templatePath))
+                throw new FileNotFoundException($"Email template not found at path: {templatePath}");
+
+            var body = File.ReadAllText(templatePath);
 
             foreach (var item in templateModel)
                 body = body.Replace(item.Key, item.Value);
 
             return body;
         }
+
     }
 }
