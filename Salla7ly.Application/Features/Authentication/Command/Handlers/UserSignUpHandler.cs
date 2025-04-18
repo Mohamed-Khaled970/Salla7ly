@@ -1,28 +1,27 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Salla7ly.Application.Common.Result_Pattern;
 using Salla7ly.Application.Features.Authentication.Command.Contracts;
+using Salla7ly.Application.Features.Authentication.Command.Errors;
+using Salla7ly.Application.Features.Authentication.Command.Responses;
 using Salla7ly.Domain;
 using Salla7ly.Infrastructure.Authentication;
+using Salla7ly.Infrastructure.Helpers;
 using Salla7ly.Infrastructure.Services;
 using Salla7ly.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Salla7ly.Application.Features.Authentication.Command.Errors;
-using Microsoft.AspNetCore.Http;
-using Salla7ly.Infrastructure.Settings;
-using Salla7ly.Infrastructure.Helpers;
-using Salla7ly.Application.Features.Authentication.Command.Responses;
-using System.Security.Cryptography;
+using Mapster;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 {
-    public class CraftmanSignUpHandler : IRequestHandler<CraftmanSignUpCommand, Result<SignInCommandResponse>>
+    public class UserSignUpHandler : IRequestHandler<UserSignUpCommand, Result<SignInCommandResponse>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -31,7 +30,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
         private readonly int _refreshTokenExpiryDays = 7;
         private readonly IEmailService _emailService;
 
-        public CraftmanSignUpHandler
+        public UserSignUpHandler
                    (UserManager<ApplicationUser> userManager,
                     ApplicationDbContext context, IJwtProvider jwtProvider,
                     SignInManager<ApplicationUser> signInManager,
@@ -43,14 +42,14 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
             _signInManager = signInManager;
             _emailService = emailService;
         }
-        public async Task<Result<SignInCommandResponse>> Handle(CraftmanSignUpCommand request, CancellationToken cancellationToken)
+        public async Task<Result<SignInCommandResponse>> Handle(UserSignUpCommand request, CancellationToken cancellationToken)
         {
             var emailIsExist = await _userManager.Users.AnyAsync(x => x.Email == request.Email, cancellationToken);
 
             if (emailIsExist)
                 return Result.Failure<SignInCommandResponse>(AuthenticationErrors.DublicatedEmail);
 
-            var userNameIsExist = await _userManager.Users.AnyAsync(x => x.UserName ==  request.UserName, cancellationToken);
+            var userNameIsExist = await _userManager.Users.AnyAsync(x => x.UserName == request.UserName, cancellationToken);
 
             if (userNameIsExist)
                 return Result.Failure<SignInCommandResponse>(AuthenticationErrors.DublicatedUserName);
@@ -122,8 +121,8 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
                     { "{{Year}}" ,"2025" }
                 });
 
-           await  _emailService.SendEmailAsync(user.Email!, "✅ Salla7ly: Email Confirmation", emailBody);
-           await Task.CompletedTask;
+            await _emailService.SendEmailAsync(user.Email!, "✅ Salla7ly: Email Confirmation", emailBody);
+            await Task.CompletedTask;
         }
 
         private static string GenerateRefreshToken()
@@ -136,5 +135,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
             var userRoles = await _userManager.GetRolesAsync(user);
             return userRoles.FirstOrDefault()!;
         }
+
+
     }
 }

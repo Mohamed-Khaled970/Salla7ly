@@ -17,6 +17,9 @@ namespace Salla7ly.Application.Features.Authentication.Command.Errors
         public static readonly Error DublicatedEmail =
          new("User.DublicatedEmail", "Another user with the same email is already exists", StatusCodes.Status409Conflict);
 
+        public static readonly Error DublicatedUserName =
+         new("User.DublicatedUserName", "Another user with the same UserName is already exists", StatusCodes.Status409Conflict);
+
         public static readonly Error InvalidOtp =
            new("User.InvalidOtp", "The provided OTP is invalid or expired.", StatusCodes.Status401Unauthorized);
 

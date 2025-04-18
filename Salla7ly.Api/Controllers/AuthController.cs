@@ -34,6 +34,15 @@ namespace Salla7ly.Api.Controllers
                    : result.ToProblem();
         }
 
+        [HttpPost("UserSignUp")]
+        public async Task<IActionResult> UserSignUp([FromBody] UserSignUpCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result.Value)
+                   : result.ToProblem();
+        }
+
         [HttpPost("SendOtp")]
         public async Task<IActionResult> SendOtp([FromBody] SendOtpCommand command)
         {

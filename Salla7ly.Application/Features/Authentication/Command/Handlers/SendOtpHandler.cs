@@ -12,6 +12,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Salla7ly.Infrastructure.Helpers;
+using Microsoft.EntityFrameworkCore;
+using Salla7ly.Application.Features.Authentication.Command.Errors;
+using Salla7ly.Application.Features.Authentication.Command.Responses;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 {
@@ -39,6 +42,16 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 
         public async Task<Result> Handle(SendOtpCommand request, CancellationToken cancellationToken)
         {
+            var emailIsExist = await _userManager.Users.AnyAsync(x => x.Email == request.Email, cancellationToken);
+
+            if (emailIsExist)
+                return Result.Failure<SignInCommandResponse>(AuthenticationErrors.DublicatedEmail);
+
+            var userNameIsExist = await _userManager.Users.AnyAsync(x => x.UserName == request.UserName, cancellationToken);
+
+            if (userNameIsExist)
+                return Result.Failure<SignInCommandResponse>(AuthenticationErrors.DublicatedUserName);
+
             var otp = GenerateOTPNumber();
             var otpEntity = new UserOtp
             {
