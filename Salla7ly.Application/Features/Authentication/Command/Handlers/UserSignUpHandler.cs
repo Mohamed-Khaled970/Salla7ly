@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Mapster;
+using Salla7ly.Application.Services;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 {
@@ -29,18 +30,21 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
         private readonly IJwtProvider _jwtProvider;
         private readonly int _refreshTokenExpiryDays = 7;
         private readonly IEmailService _emailService;
+        private readonly IGlobalService _globalService;
 
         public UserSignUpHandler
                    (UserManager<ApplicationUser> userManager,
                     ApplicationDbContext context, IJwtProvider jwtProvider,
                     SignInManager<ApplicationUser> signInManager,
-                    IEmailService emailService)
+                    IEmailService emailService,
+                    IGlobalService globalService)
         {
             _userManager = userManager;
             _context = context;
             _jwtProvider = jwtProvider;
             _signInManager = signInManager;
             _emailService = emailService;
+            _globalService = globalService;
         }
         public async Task<Result<SignInCommandResponse>> Handle(UserSignUpCommand request, CancellationToken cancellationToken)
         {
@@ -78,64 +82,13 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 
             if (result.Succeeded)
             {
-                user.EmailConfirmed = true;
-                otp.IsDisabled = true;
-                await _context.SaveChangesAsync(cancellationToken);
-
-                var userRole = await GetUserRole(user, cancellationToken);
-                var (token, expiresIn) = _jwtProvider.GenerateToken(user, userRole);
-
-                var refreshToken = GenerateRefreshToken();
-                var refreshTokenExpiration = DateTime.UtcNow.AddDays(_refreshTokenExpiryDays);
-
-                user.RefreshTokens.Add(new RefreshToken
-                {
-                    Token = refreshToken,
-                    ExpiresOn = refreshTokenExpiration
-                });
-
-                await _userManager.UpdateAsync(user);
-
-                var response = new SignInCommandResponse(user.Id, user.Email, user.UserName, token, expiresIn, refreshToken, refreshTokenExpiration);
-
-                return Result.Success(response);
+                return await _globalService.GenerateSignUpToken(user, otp, cancellationToken);
             }
-
 
             var error = result.Errors.First();
 
             return Result.Failure<SignInCommandResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
-        private string GenerateOTPNumber()
-        {
-            Random random = new Random();
-            return random.Next(0, 10000000).ToString("D6");
-        }
-        private async Task SendOTPEmail(ApplicationUser user, string OtpText)
-        {
-            var emailBody = EmailBodyBuilder.GenerateEmailBody("OtpTemplate",
-                new Dictionary<string, string>
-                {
-                    { "{{Name}}" ,user.UserName! },
-                    { "{{Otp}}" ,OtpText },
-                    { "{{Year}}" ,"2025" }
-                });
-
-            await _emailService.SendEmailAsync(user.Email!, "✅ Salla7ly: Email Confirmation", emailBody);
-            await Task.CompletedTask;
-        }
-
-        private static string GenerateRefreshToken()
-        {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-        }
-
-        private async Task<string> GetUserRole(ApplicationUser user, CancellationToken cancellationToken)
-        {
-            var userRoles = await _userManager.GetRolesAsync(user);
-            return userRoles.FirstOrDefault()!;
-        }
-
 
     }
 }

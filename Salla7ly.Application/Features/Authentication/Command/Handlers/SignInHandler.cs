@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Salla7ly.Infrastructure.Services;
 using Salla7ly.Infrastructure.Settings;
+using Salla7ly.Application.Services;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 {
@@ -32,23 +33,22 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
         private readonly IJwtProvider _jwtProvider;
         private readonly int _refreshTokenExpiryDays = 7;
         private readonly IEmailService _emailService;
+        private readonly IGlobalService _globalService;
 
         public SignInHandler
                    (UserManager<ApplicationUser> userManager,
                     ApplicationDbContext context, IJwtProvider jwtProvider,
                     SignInManager<ApplicationUser> signInManager,
-                    IEmailService emailService)
+                    IEmailService emailService,
+                      IGlobalService globalService)
         {
             _userManager = userManager;
             _context = context;
             _jwtProvider = jwtProvider;
             _signInManager = signInManager;
             _emailService = emailService;
+            _globalService = globalService;
         }
-
-
-        #region Login 
-        
         public async Task<Result<SignInCommandResponse>> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
             if (await _userManager.FindByEmailAsync(request.Email) is not { } user)
@@ -59,10 +59,10 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 
             if (result.Succeeded)
             {
-                var userRole = await GetUserRole(user, cancellationToken);
+                var userRole = await _globalService.GetUserRole(user, cancellationToken);
                 var (token, expiresIn) = _jwtProvider.GenerateToken(user, userRole);
 
-                var refreshToken = GenerateRefreshToken();
+                var refreshToken = _globalService.GenerateRefreshToken();
                 var refreshTokenExpiration = DateTime.UtcNow.AddDays(_refreshTokenExpiryDays);
 
                 user.RefreshTokens.Add(new RefreshToken
@@ -81,17 +81,6 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
             return Result.Failure<SignInCommandResponse>(result.IsNotAllowed ? AuthenticationErrors.EmailNotConfirmed : AuthenticationErrors.InvalidCredentails);
         }
 
-        private static string GenerateRefreshToken()
-        {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-        }
-
-        private async Task<string> GetUserRole(ApplicationUser user, CancellationToken cancellationToken)
-        {
-            var userRoles = await _userManager.GetRolesAsync(user);
-            return userRoles.FirstOrDefault()!;
-        }
-        #endregion
 
 
     }

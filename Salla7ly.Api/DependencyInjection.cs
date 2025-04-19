@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Salla7ly.Application;
+using Salla7ly.Application.Services;
 using Salla7ly.Domain;
 using Salla7ly.Infrastructure;
 using Salla7ly.Infrastructure.Authentication;
@@ -37,6 +38,8 @@ namespace Salla7ly.Api
             services.AddMapsterConfig();
 
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IGlobalService,GlobalService>();
+
 
             services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
             return services;
