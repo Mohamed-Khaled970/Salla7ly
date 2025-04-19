@@ -26,22 +26,16 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
     public class CraftmanSignUpHandler : IRequestHandler<CraftmanSignUpCommand, Result<SignInCommandResponse>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
-        private readonly IJwtProvider _jwtProvider;
-        private readonly int _refreshTokenExpiryDays = 7;
         private readonly IGlobalService _globalService;
 
         public CraftmanSignUpHandler
                    (UserManager<ApplicationUser> userManager,
-                    ApplicationDbContext context, IJwtProvider jwtProvider,
-                    SignInManager<ApplicationUser> signInManager,
+                    ApplicationDbContext context,
                     IGlobalService globalService)
         {
             _userManager = userManager;
             _context = context;
-            _jwtProvider = jwtProvider;
-            _signInManager = signInManager;
             _globalService = globalService;
         }
         public async Task<Result<SignInCommandResponse>> Handle(CraftmanSignUpCommand request, CancellationToken cancellationToken)

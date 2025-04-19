@@ -28,7 +28,7 @@ namespace Salla7ly.Application.Services
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IJwtProvider _jwtProvider = jwtProvider;
         private readonly int _refreshTokenExpiryDays = 7;
-        public async Task SendOtpAsync(string Email, string UserName, CancellationToken cancellationToken)
+        public async Task SendVerificationOtpAsync(string Email, string UserName, CancellationToken cancellationToken)
         {
             var otp = GenerateOTPNumber();
             var otpEntity = new UserOtp
@@ -41,7 +41,23 @@ namespace Salla7ly.Application.Services
             _context.UserOtps.Add(otpEntity);
             await _context.SaveChangesAsync(cancellationToken);
 
-            await SendOTPEmail(UserName, Email, otp);
+            await SendVerificationOTPEmail(UserName, Email, otp);
+        }
+
+        public async Task SendForgetPasswordOtpAsync(string Email, CancellationToken cancellationToken)
+        {
+            var otp = GenerateOTPNumber();
+            var otpEntity = new UserOtp
+            {
+                Email = Email,
+                Code = otp,
+                ExpirationTime = DateTime.UtcNow.AddMinutes(2)
+            };
+
+            _context.UserOtps.Add(otpEntity);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            await SendForgetPasswordOTPEmail(Email, otp);
         }
 
         public string GenerateRefreshToken()
@@ -85,7 +101,7 @@ namespace Salla7ly.Application.Services
             Random random = new Random();
             return random.Next(0, 10000000).ToString("D6");
         }
-        private async Task SendOTPEmail(string userName, string Email, string OtpText)
+        private async Task SendVerificationOTPEmail(string userName, string Email, string OtpText)
         {
             var emailBody = EmailBodyBuilder.GenerateEmailBody("OtpTemplate",
                 new Dictionary<string, string>
@@ -96,6 +112,19 @@ namespace Salla7ly.Application.Services
                 });
 
             await _emailService.SendEmailAsync(Email, "✅ Salla7ly: Email Confirmation", emailBody);
+            await Task.CompletedTask;
+        }
+
+        private async Task SendForgetPasswordOTPEmail(string Email, string OtpText)
+        {
+            var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPasswordOtpTemplate",
+                new Dictionary<string, string>
+                {
+                    { "{{Otp}}" ,OtpText },
+                    { "{{Year}}" ,"2025" }
+                });
+
+            await _emailService.SendEmailAsync(Email, "✅ Salla7ly: Reset Password", emailBody);
             await Task.CompletedTask;
         }
 

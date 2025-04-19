@@ -25,25 +25,16 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
     public class UserSignUpHandler : IRequestHandler<UserSignUpCommand, Result<SignInCommandResponse>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
-        private readonly IJwtProvider _jwtProvider;
-        private readonly int _refreshTokenExpiryDays = 7;
-        private readonly IEmailService _emailService;
         private readonly IGlobalService _globalService;
 
         public UserSignUpHandler
                    (UserManager<ApplicationUser> userManager,
-                    ApplicationDbContext context, IJwtProvider jwtProvider,
-                    SignInManager<ApplicationUser> signInManager,
-                    IEmailService emailService,
+                    ApplicationDbContext context,
                     IGlobalService globalService)
         {
             _userManager = userManager;
             _context = context;
-            _jwtProvider = jwtProvider;
-            _signInManager = signInManager;
-            _emailService = emailService;
             _globalService = globalService;
         }
         public async Task<Result<SignInCommandResponse>> Handle(UserSignUpCommand request, CancellationToken cancellationToken)

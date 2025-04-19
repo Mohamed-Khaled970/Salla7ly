@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Contracts
 {
-    public record SendOtpCommand
+    public record ResetPasswordCommand
     (
-        string UserName,
-        string Email
-    ) : IRequest<Result>;
+        string Email,
+        string Password
+    ):IRequest<Result>;
 }

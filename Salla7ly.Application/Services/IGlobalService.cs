@@ -10,7 +10,8 @@ namespace Salla7ly.Application.Services
 {
     public interface IGlobalService
     {
-        Task SendOtpAsync(string Email, string UserName, CancellationToken cancellationToken);
+        Task SendVerificationOtpAsync(string Email, string UserName, CancellationToken cancellationToken);
+        Task SendForgetPasswordOtpAsync(string Email, CancellationToken cancellationToken);
         Task<string> GetUserRole(ApplicationUser user, CancellationToken cancellationToken);
         Task<Result<SignInCommandResponse>> GenerateSignUpToken(ApplicationUser user,UserOtp otp, CancellationToken cancellationToken);
 

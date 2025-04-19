@@ -8,23 +8,23 @@ using System.Threading.Tasks;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Validators
 {
-    public class CraftmanSignUpCommandValidator : AbstractValidator<CraftmanSignUpCommand>
+    public class UserSignUpCommandValidator : AbstractValidator<UserSignUpCommand>
     {
-        public CraftmanSignUpCommandValidator()
+        public UserSignUpCommandValidator()
         {
             RuleFor(x => x.UserName)
                     .NotNull()
                     .NotEmpty()
                     .Matches(@"^[a-zA-Z]{3}[a-zA-Z0-9_]{2,17}$")
                     .WithMessage("UserName must be 5 to 20 characters long, start with at least 3 letters, and can include letters, numbers, and underscores.");
-            
+
             RuleFor(x => x.Password)
                     .NotNull()
                     .NotEmpty()
                     .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$")
                     .WithMessage("Password must be at least 8 characters long and include at least one uppercase letter, " +
                     "one lowercase letter, one digit, and one special character.");
-        
+
             RuleFor(x => x.ConfirmPassword)
                     .NotNull()
                     .NotEmpty()
@@ -35,19 +35,6 @@ namespace Salla7ly.Application.Features.Authentication.Command.Validators
                     .NotEmpty()
                     .EmailAddress().WithMessage("Invalid email address format.");
 
-            RuleFor(x => x.DateOfBirth)
-                .NotNull()
-                .NotEmpty();
-
-            RuleFor(x => x.IdCardFrontUrl)
-               .NotNull()
-               .NotEmpty();
-
-            RuleFor(x => x.IdCardBackUrl)
-                .NotNull()
-                .NotEmpty();
-
-            
         }
     }
 }

@@ -6,7 +6,7 @@ using Salla7ly.Application.Features.Authentication.Command.Contracts;
 
 namespace Salla7ly.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -43,8 +43,35 @@ namespace Salla7ly.Api.Controllers
                    : result.ToProblem();
         }
 
-        [HttpPost("SendOtp")]
-        public async Task<IActionResult> SendOtp([FromBody] SendOtpCommand command)
+        [HttpPost("SendVreficationOtp")]
+        public async Task<IActionResult> SendVreficationOtp([FromBody] SendVreficationOtpCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok()
+                   : result.ToProblem();
+        }
+
+        [HttpPost("SendForgetPasswordOtp")]
+        public async Task<IActionResult> SendForgetPasswordOtp([FromBody] SendForgetPasswordOtpCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok()
+                   : result.ToProblem();
+        }
+
+        [HttpPost("ValidateForgetPasswordOtp")]
+        public async Task<IActionResult> ValidateForgetPasswordOtp([FromBody] ValidateForgePasswordOtpCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok()
+                   : result.ToProblem();
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
         {
             var result = await _mediator.Send(command);
 

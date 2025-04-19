@@ -16,12 +16,12 @@ using Salla7ly.Application.Services;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 {
-    public class SendOtpHandler : IRequestHandler<SendOtpCommand,Result>
+    public class SendVreficationOtpHandler : IRequestHandler<SendVreficationOtpCommand,Result>
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IGlobalService _globalService;
 
-        public SendOtpHandler
+        public SendVreficationOtpHandler
                    (UserManager<ApplicationUser> userManager,
                      IGlobalService globalService)
         {
@@ -29,7 +29,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
             _globalService = globalService; 
         }
 
-        public async Task<Result> Handle(SendOtpCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(SendVreficationOtpCommand request, CancellationToken cancellationToken)
         {
             var emailIsExist = await _userManager.Users.AnyAsync(x => x.Email == request.Email, cancellationToken);
 
@@ -41,7 +41,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
             if (userNameIsExist)
                 return Result.Failure<SignInCommandResponse>(AuthenticationErrors.DublicatedUserName);
 
-          await _globalService.SendOtpAsync(request.Email, request.UserName, cancellationToken); 
+          await _globalService.SendVerificationOtpAsync(request.Email, request.UserName, cancellationToken); 
 
             return Result.Success();
         }
