@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -36,6 +37,7 @@ namespace Salla7ly.Api
             services.AddMediatRServices();
             services.AddFluentValidationConfig();
             services.AddMapsterConfig();
+            services.AddBackgroundJobsConfig(configuration);
 
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGlobalService,GlobalService>();
@@ -59,7 +61,17 @@ namespace Salla7ly.Api
         //    services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
         //    return services;
         //}
+        private static IServiceCollection AddBackgroundJobsConfig(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
 
+            services.AddHangfireServer();
+            return services;
+        }
         private static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddIdentity<ApplicationUser, ApplicationRole>()

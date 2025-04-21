@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Identity;
 using Salla7ly.Application.Common.Result_Pattern;
 using Salla7ly.Application.Features.Authentication.Command.Responses;
 using Salla7ly.Domain;
@@ -111,7 +112,7 @@ namespace Salla7ly.Application.Services
                     { "{{Year}}" ,"2025" }
                 });
 
-            await _emailService.SendEmailAsync(Email, "✅ Salla7ly: Email Confirmation", emailBody);
+            BackgroundJob.Enqueue(() => _emailService.SendEmailAsync(Email, "✅ Salla7ly: Email Confirmation", emailBody));
             await Task.CompletedTask;
         }
 
@@ -124,7 +125,8 @@ namespace Salla7ly.Application.Services
                     { "{{Year}}" ,"2025" }
                 });
 
-            await _emailService.SendEmailAsync(Email, "✅ Salla7ly: Reset Password", emailBody);
+            BackgroundJob.Enqueue(() => _emailService.SendEmailAsync(Email, "✅ Salla7ly: Reset Password", emailBody));
+
             await Task.CompletedTask;
         }
 
