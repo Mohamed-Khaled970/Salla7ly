@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Salla7ly.Api.Helpers;
 using Salla7ly.Application;
 using Salla7ly.Application.Services;
 using Salla7ly.Domain;
 using Salla7ly.Infrastructure;
 using Salla7ly.Infrastructure.Authentication;
+using Salla7ly.Infrastructure.Helpers;
 using Salla7ly.Infrastructure.Services;
 using Salla7ly.Infrastructure.Settings;
 using System.Reflection;
@@ -41,6 +43,7 @@ namespace Salla7ly.Api
 
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGlobalService,GlobalService>();
+            services.AddScoped<IEmailBodyBuilder,EmailBodyBuilder>();
 
 
             services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));

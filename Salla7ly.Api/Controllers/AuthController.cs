@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Salla7ly.Api.Abstraction;
 using Salla7ly.Application.Features.Authentication.Command.Contracts;
+using Salla7ly.Infrastructure.Helpers;
 
 namespace Salla7ly.Api.Controllers
 {
@@ -11,9 +12,10 @@ namespace Salla7ly.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public AuthController(IMediator mediator)
         {
-            _mediator =  mediator ?? throw new ArgumentNullException(nameof(mediator)); 
+            _mediator =  mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         [HttpPost("login")]
@@ -46,10 +48,12 @@ namespace Salla7ly.Api.Controllers
         [HttpPost("SendVreficationOtp")]
         public async Task<IActionResult> SendVreficationOtp([FromBody] SendVreficationOtpCommand command)
         {
-            var result = await _mediator.Send(command);
 
-            return result.IsSuccess ? Ok()
-                   : result.ToProblem();
+                var result = await _mediator.Send(command);
+
+                return result.IsSuccess ? Ok()
+                       : result.ToProblem();
+
         }
 
         [HttpPost("SendForgetPasswordOtp")]
@@ -96,5 +100,7 @@ namespace Salla7ly.Api.Controllers
             return result.IsSuccess ? Ok(result.Value)
                    : result.ToProblem();
         }
+
+
     }
 }

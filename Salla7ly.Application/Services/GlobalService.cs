@@ -21,13 +21,15 @@ namespace Salla7ly.Application.Services
     public class GlobalService(IEmailService emailService ,
                     ApplicationDbContext context,
                     UserManager<ApplicationUser> userManager,
-                    IJwtProvider jwtProvider) : IGlobalService
+                    IJwtProvider jwtProvider,
+                    IEmailBodyBuilder emailBodyBuilder) : IGlobalService
     {
 
         private readonly IEmailService _emailService = emailService;
         private readonly ApplicationDbContext _context = context;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IJwtProvider _jwtProvider = jwtProvider;
+        private readonly IEmailBodyBuilder _emailBodyBuilder = emailBodyBuilder;
         private readonly int _refreshTokenExpiryDays = 7;
         public async Task SendVerificationOtpAsync(string Email, string UserName, CancellationToken cancellationToken)
         {
@@ -104,7 +106,7 @@ namespace Salla7ly.Application.Services
         }
         private async Task SendVerificationOTPEmail(string userName, string Email, string OtpText)
         {
-            var emailBody = EmailBodyBuilder.GenerateEmailBody("OtpTemplate",
+            var emailBody = _emailBodyBuilder.GenerateEmailBody("OtpTemplate",
                 new Dictionary<string, string>
                 {
                     { "{{Name}}" ,userName! },
@@ -118,7 +120,7 @@ namespace Salla7ly.Application.Services
 
         private async Task SendForgetPasswordOTPEmail(string Email, string OtpText)
         {
-            var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPasswordOtpTemplate",
+            var emailBody = _emailBodyBuilder.GenerateEmailBody("ForgetPasswordOtpTemplate",
                 new Dictionary<string, string>
                 {
                     { "{{Otp}}" ,OtpText },
