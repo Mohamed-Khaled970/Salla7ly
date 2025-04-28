@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Mapster;
 using Salla7ly.Application.Services;
+using Salla7ly.Infrastructure.Consts;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 {
@@ -73,6 +74,7 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, DefaultRoles.User);
                 return await _globalService.GenerateSignUpToken(user, otp, cancellationToken);
             }
 

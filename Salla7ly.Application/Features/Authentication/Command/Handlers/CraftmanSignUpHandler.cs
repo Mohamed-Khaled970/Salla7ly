@@ -20,6 +20,7 @@ using Salla7ly.Infrastructure.Helpers;
 using Salla7ly.Application.Features.Authentication.Command.Responses;
 using System.Security.Cryptography;
 using Salla7ly.Application.Services;
+using Salla7ly.Infrastructure.Consts;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 {
@@ -74,7 +75,8 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 
             if (result.Succeeded)
             {
-               return await _globalService.GenerateSignUpToken(user,otp,cancellationToken);
+                await _userManager.AddToRoleAsync(user, DefaultRoles.Craftsman);
+                return await _globalService.GenerateSignUpToken(user,otp,cancellationToken);
             }
 
 

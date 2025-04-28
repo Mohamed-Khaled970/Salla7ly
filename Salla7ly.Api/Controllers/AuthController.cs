@@ -78,5 +78,23 @@ namespace Salla7ly.Api.Controllers
             return result.IsSuccess ? Ok()
                    : result.ToProblem();
         }
+
+        [HttpPost("GoogleSignIn")]
+        public async Task<IActionResult> GoogleSignIn([FromBody] GoogleSignInCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result.Value)
+                   : result.ToProblem();
+        }
+
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result.Value)
+                   : result.ToProblem();
+        }
     }
 }
