@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Salla7ly.Application\Salla7ly.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
