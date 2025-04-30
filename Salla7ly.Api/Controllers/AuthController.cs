@@ -30,10 +30,12 @@ namespace Salla7ly.Api.Controllers
         [HttpPost("CraftmanSignUp")]
         public async Task<IActionResult> CraftmanSignUp([FromBody] CraftmanSignUpCommand command)
         {
-            var result = await _mediator.Send(command);
+           
+                var result = await _mediator.Send(command);
 
-            return result.IsSuccess ? Ok(result.Value)
-                   : result.ToProblem();
+                return result.IsSuccess ? Ok(result.Value)
+                       : result.ToProblem();
+
         }
 
         [HttpPost("UserSignUp")]

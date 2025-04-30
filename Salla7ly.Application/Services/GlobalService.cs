@@ -102,7 +102,7 @@ namespace Salla7ly.Application.Services
         private string GenerateOTPNumber()
         {
             Random random = new Random();
-            return random.Next(0, 10000000).ToString("D6");
+            return random.Next(0, 1000000).ToString("D6");
         }
         private async Task SendVerificationOTPEmail(string userName, string Email, string OtpText)
         {
