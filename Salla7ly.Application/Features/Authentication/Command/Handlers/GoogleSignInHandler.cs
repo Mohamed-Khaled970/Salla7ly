@@ -17,6 +17,7 @@ using Mapster;
 using Salla7ly.Application.Common.Result_Pattern;
 using System.Threading;
 using Salla7ly.Infrastructure.Consts;
+using Microsoft.AspNetCore.Http;
 
 namespace Salla7ly.Application.Features.Authentication.Command.Handlers
 {
@@ -52,16 +53,27 @@ namespace Salla7ly.Application.Features.Authentication.Command.Handlers
             if (user is null)
             {
                 var createdUser = request.Adapt<ApplicationUser>();
+                createdUser.UserName = request.Email;
+                createdUser.EmailConfirmed = true;
+                var result = await _userManager.CreateAsync(createdUser);
 
-                var result = await _userManager.CreateAsync(user!);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, DefaultRoles.User);
-                    return await GetTokenAndRefreshToken(user! , cancellationToken);
+                    await _userManager.AddToRoleAsync(createdUser, DefaultRoles.User);
+                    return await GetTokenAndRefreshToken(createdUser, cancellationToken);
                 }
+                else
+                {
+                    var error = result.Errors.First();
+
+                    return Result.Failure<SignInCommandResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+                }
+
             }
 
-            return await GetTokenAndRefreshToken(user!, cancellationToken);
+
+                return await GetTokenAndRefreshToken(user!, cancellationToken);
+            
         }
 
 

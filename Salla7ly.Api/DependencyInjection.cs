@@ -12,6 +12,7 @@ using Salla7ly.Infrastructure.Authentication;
 using Salla7ly.Infrastructure.Helpers;
 using Salla7ly.Infrastructure.Services;
 using Salla7ly.Infrastructure.Settings;
+using Serilog;
 using System.Reflection;
 using System.Text;
 

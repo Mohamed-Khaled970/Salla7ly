@@ -1,12 +1,20 @@
 using Hangfire;
 using HangfireBasicAuthenticationFilter;
 using Salla7ly.Api;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddDependencies(builder.Configuration);
+
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    // Reads Serilog settings from appsettings.json (or other configuration sources)
+    configuration.ReadFrom.Configuration(context.Configuration);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

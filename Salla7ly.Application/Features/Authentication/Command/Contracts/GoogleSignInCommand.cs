@@ -11,7 +11,6 @@ namespace Salla7ly.Application.Features.Authentication.Command.Contracts
 {
     public record GoogleSignInCommand
     (
-        string Email,
-        string Name
+        string Email
     ) : IRequest<Result<SignInCommandResponse>>;
 }
